@@ -23,6 +23,8 @@ Porém se preferir segue alguns usuarios e senhas:
 Admin: `wallace.reetz@gmail.com` `oh_my_pass`
 User: `wall.ree1@gmail.com` `oh_my_pass`
 
+Por questão de tempo não consegui fazer testes e nem deixar configuravel o `schema`. O `schema` default está sendo usado o `ioasys`.
+
 # Sobre
 
 Estes documento README tem como objetivo fornecer as informações necessárias para realização do projeto de avaliação de candidatos.
