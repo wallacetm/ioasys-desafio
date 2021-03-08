@@ -18,7 +18,7 @@ export class JWTAuthService implements AuthService {
   @inject(TYPES.CONTAINER_DEFAULT_ADMIN_SERVICE) private readonly adminService: AdminService;
 
   async getUser(token: string): Promise<UserPrincipal> {
-    const user = jwt.verify(token, this.config.get(CONFIG_AUTH_SECRET));
+    const user = jwt.verify(token, this.config.get(CONFIG_AUTH_SECRET, 'S0m3_S3cR3t'));
     if (typeof user === 'string') {
       throw createError(401, 'Invalid json web token');
     }
@@ -38,7 +38,7 @@ export class JWTAuthService implements AuthService {
     if (!userPrincipal) {
       throw createError(401, 'Invalid user email and password');
     }
-    const token = jwt.sign(userPrincipal, this.config.get(CONFIG_AUTH_SECRET));
+    const token = jwt.sign({ ...userPrincipal }, this.config.get(CONFIG_AUTH_SECRET, 'S0m3_S3cR3t'));
     return token;
   }
 }

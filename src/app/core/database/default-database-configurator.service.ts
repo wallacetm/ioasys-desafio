@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { Connection, createConnection, getConnection } from 'typeorm';
+import { Connection, ConnectionOptions, createConnection, getConnection } from 'typeorm';
 import { CONFIG_APPLICATION_BASEDIR, CONFIG_DATABASE_HOST, CONFIG_DATABASE_PASS, CONFIG_DATABASE_PORT, CONFIG_DATABASE_USER, CONFIG_DATABASE_NAME, CONFIG_DATABASE_LOGGING } from '../../../constants';
 import { ConfigService } from '../config/interfaces';
 import { TYPES } from '../containers/types';
@@ -13,24 +13,38 @@ export class DefaultDatabaseConfiguratorService implements DatabaseConfiguratorS
 
   async configure(): Promise<void> {
     try {
-      const connection = await createConnection({
+      const connectionOptions: ConnectionOptions = {
         host: this.config.get<string>(CONFIG_DATABASE_HOST),
         port: +this.config.get<number>(CONFIG_DATABASE_PORT),
         username: this.config.get<string>(CONFIG_DATABASE_USER),
         password: this.config.get<string>(CONFIG_DATABASE_PASS),
         database: this.config.get<string>(CONFIG_DATABASE_NAME),
         type: 'postgres',
-        entities: [`${this.config.get(CONFIG_APPLICATION_BASEDIR)}/**/*.entity{.ts,.js}`],
-        synchronize: true,
+        synchronize: false,
         logging: this.config.get<boolean>(CONFIG_DATABASE_LOGGING, false),
+      };
+      const migrationConnection = await createConnection({
+        ...connectionOptions,
+        name: 'migrations',
+        migrations: [`${this.config.get(CONFIG_APPLICATION_BASEDIR)}/migration/*{.ts,.js}`],
+        migrationsTransactionMode: 'all'
       });
-      this.logger.info('Conexão com o banco de dados realizada com sucesso',);
 
-      if (!connection.isConnected) {
-        connection.connect();
+      if (!migrationConnection.isConnected) {
+        migrationConnection.connect();
       }
 
-      connection.entityMetadatas.forEach(entity => {
+      await migrationConnection.runMigrations();
+      this.logger.info('Migração de base realizada com sucesso');
+
+      const defaultConnection = await createConnection({
+        name: 'default',
+        ...connectionOptions,
+        schema: 'ioasys',
+        entities: [`${this.config.get(CONFIG_APPLICATION_BASEDIR)}/**/*.entity{.ts,.js}`],
+      });
+
+      defaultConnection.entityMetadatas.forEach(entity => {
         this.logger.info(`Mapped entity'${entity.name}'`);
       });
     } catch (error) {
@@ -40,6 +54,6 @@ export class DefaultDatabaseConfiguratorService implements DatabaseConfiguratorS
   }
 
   static getConnection(): Connection {
-    return getConnection();
+    return getConnection('default');
   }
 }

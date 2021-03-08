@@ -4,8 +4,8 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class BCryptCryptoService implements CryptoService {
-  encrypt(value: string, salt: string): Promise<string> {
-    return hash(value, salt);
+  encrypt(value: string): Promise<string> {
+    return hash(value, 10);
   }
   compare(hash: string, value: string): Promise<boolean> {
     return compare(hash, value);

@@ -14,6 +14,6 @@ export interface AuthService {
 }
 
 export interface CryptoService {
-  encrypt(value: string, salt: string): Promise<string>;
+  encrypt(value: string): Promise<string>;
   compare(hash: string, value: string): Promise<boolean>;
 }

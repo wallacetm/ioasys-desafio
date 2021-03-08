@@ -2,7 +2,7 @@ import { Entity } from 'typeorm';
 import { PersonEntity } from '../../shared/person/person.entity';
 import { UserDTO } from './user.dto';
 
-@Entity('user')
+@Entity('users')
 export class UserEntity extends PersonEntity {
   constructor(partial: Partial<UserEntity> = {}) {
     super(partial);

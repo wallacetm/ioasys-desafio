@@ -16,7 +16,7 @@ export class MovieDTO {
   }
   @IsOptional()
   public readonly uuid: string;
-  
+
   @IsNotEmpty({ message: 'Director name cannot be null' })
   @IsString({ message: 'Director name invalid' })
   public readonly director: string;
@@ -33,4 +33,7 @@ export class MovieDTO {
   @IsArray({ message: 'Actors list need to be a list' })
   @IsString({ each: true, message: 'Actors list should be a valid array of strings' })
   public readonly actors: string[];
+
+  @IsOptional()
+  public readonly ratingAvg?: number;
 }

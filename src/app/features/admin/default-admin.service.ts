@@ -37,7 +37,7 @@ export class DefaultAdminService implements AdminService {
   async getAndValidatePassword(admin: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<AdminDTO> {
     try {
       const entity = await this.repository.findOne({ where: { email: admin.email } });
-      const equals = await this.crypto.compare(entity.password, admin.password);
+      const equals = await this.crypto.compare(admin.password, entity.password);
       if (equals) {
         return entity.toDTO()
       }
@@ -63,7 +63,7 @@ export class DefaultAdminService implements AdminService {
       entity.createdBy = this.user.details.uuid;
       entity.uuid = uuidv4();
     }
-    entity.password = await this.crypto.encrypt(entityUpdate.password, entity.uuid);
+    entity.password = await this.crypto.encrypt(entityUpdate.password);
     entity.updatedBy = this.user.details.uuid;
     return repository.save(entity).then(entity => entity.toDTO());
   }

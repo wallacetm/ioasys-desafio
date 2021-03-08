@@ -39,10 +39,10 @@ export class DefaultMovieService implements MovieService {
   }
 
   get(uuid: string): Promise<MovieDTO> {
-    return this.repository.findOne(uuid);
+    return this.repository.findOne(uuid, { relations: ['votes'] }).then(entity => entity.toDTO());
   }
   getAll(options: FindManyOptions<MovieEntity>): Promise<MovieDTO[]> {
-    return this.repository.find(options);
+    return this.repository.find(options).then(entities => entities.map(entity => entity.toDTO()));
   }
 
 }

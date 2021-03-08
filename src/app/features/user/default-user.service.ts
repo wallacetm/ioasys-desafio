@@ -37,7 +37,7 @@ export class DefaultUserService implements UserService {
   async getAndValidatePassword(user: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<UserDTO> {
     try {
       const entity = await this.repository.findOne({ where: { email: user.email } });
-      const equals = await this.crypto.compare(entity.password, user.password);
+      const equals = await this.crypto.compare(user.password, entity.password);
       if (equals) {
         return entity.toDTO();
       }
@@ -63,7 +63,7 @@ export class DefaultUserService implements UserService {
       entity.createdBy = this.user.details.uuid;
       entity.uuid = uuidv4();
     }
-    entity.password = await this.crypto.encrypt(entityUpdate.password, entity.uuid);
+    entity.password = await this.crypto.encrypt(entityUpdate.password);
     entity.updatedBy = this.user.details.uuid;
     return repository.save(entity).then(entity => entity.toDTO());
   }

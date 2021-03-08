@@ -1,9 +1,12 @@
 import { inject } from 'inversify';
-import { BaseHttpController, controller, interfaces, requestParam, httpGet, queryParam } from 'inversify-express-utils';
+import { BaseHttpController, controller, interfaces, requestParam, httpGet, queryParam, httpPost, requestBody } from 'inversify-express-utils';
 import { MovieService } from './interfaces';
 import { TYPES } from '../../core/containers/types';
 import { QueryBuilder } from 'typeorm-express-query-builder';
 import * as createHttpError from 'http-errors';
+import { permission } from '../../shared/decorators/permission.decorator';
+import { MovieToSaveDTO } from './movie-to-save.dto';
+import { validate } from '../../shared/decorators/validate.decorator';
 
 @controller('/movies')
 export class MovieController extends BaseHttpController {
@@ -63,10 +66,20 @@ export class MovieController extends BaseHttpController {
    * @returns {HttpError.model} 409 - Movie already exists.
    * @returns {HttpError.model} 422 - Movie payload invalid.
    */
-  // @permission('admin')
-  // @validate(MovieToSaveDTO)
-  // @httpPost('', TYPES.CONTAINER_REQUIRED_AUTH_MIDDLEWARE)
-  // public async create(@requestBody() movie: MovieToSaveDTO): Promise<interfaces.IHttpActionResult> {
+  @permission('admin')
+  @validate(MovieToSaveDTO)
+  @httpPost('', TYPES.CONTAINER_REQUIRED_AUTH_MIDDLEWARE)
+  public async create(@requestBody() movie: MovieToSaveDTO): Promise<interfaces.IHttpActionResult> {
+    try {
+      const exists = await this.service.exists({ name: movie.name });
+      if (exists) {
+        throw createHttpError(409, `Movie already exists with name: ${movie.name}`);
+      }
+      return this.ok(await this.service.save(movie));
+    } catch (error) {
+      throw error;
+    }
+  }
 
-  // }
+  
 }
