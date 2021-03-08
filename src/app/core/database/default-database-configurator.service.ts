@@ -1,16 +1,15 @@
 import { inject, injectable } from 'inversify';
 import { Connection, createConnection, getConnection } from 'typeorm';
 import { CONFIG_APPLICATION_BASEDIR, CONFIG_DATABASE_HOST, CONFIG_DATABASE_PASS, CONFIG_DATABASE_PORT, CONFIG_DATABASE_USER, CONFIG_DATABASE_NAME, CONFIG_DATABASE_LOGGING } from '../../../constants';
-import { CONTAINER_MAP_CONFIG_SERVICE } from '../config/container';
 import { ConfigService } from '../config/interfaces';
-import { CONTAINER_CONSOLE_LOGGER_SERVICE } from '../logger/container';
+import { TYPES } from '../containers/types';
 import { LoggerService } from '../logger/interfaces';
 import { DatabaseConfiguratorService } from './interfaces';
 
 @injectable()
 export class DefaultDatabaseConfiguratorService implements DatabaseConfiguratorService {
-  @inject(CONTAINER_MAP_CONFIG_SERVICE) private readonly config: ConfigService;
-  @inject(CONTAINER_CONSOLE_LOGGER_SERVICE) private readonly logger: LoggerService;
+  @inject(TYPES.CONTAINER_MAP_CONFIG_SERVICE) private readonly config: ConfigService;
+  @inject(TYPES.CONTAINER_CONSOLE_LOGGER_SERVICE) private readonly logger: LoggerService;
 
   async configure(): Promise<void> {
     try {
@@ -25,7 +24,7 @@ export class DefaultDatabaseConfiguratorService implements DatabaseConfiguratorS
         synchronize: true,
         logging: this.config.get<boolean>(CONFIG_DATABASE_LOGGING, false),
       });
-      this.logger.info(`Conexão com o banco de dados realizada com sucesso`,);
+      this.logger.info('Conexão com o banco de dados realizada com sucesso',);
 
       if (!connection.isConnected) {
         connection.connect();

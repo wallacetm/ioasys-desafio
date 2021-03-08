@@ -1,19 +1,17 @@
 import 'reflect-metadata';
-import * as express from 'express';
+import { Express } from 'express';
 import { InversifyExpressServer, getRouteInfo } from 'inversify-express-utils';
 import { App } from './app/index';
 import { CoreContainer } from './app/core/containers/inversify.config';
-import { CONTAINER_MAP_CONFIG_SERVICE } from './app/core/config/container';
 import { ConfigService } from './app/core/config/interfaces';
 import { CONFIG_SERVER_PORT } from './constants';
 import { LoggerService } from './app/core/logger/interfaces';
-import { CONTAINER_CONSOLE_LOGGER_SERVICE } from './app/core/logger/container';
 import { name, version, description, keywords } from '../package.json';
 import { DatabaseConfiguratorService } from './app/core/database/interfaces';
-import { CONTAINER_DEFAULT_DATABASE_CONFIGURATOR_SERVICE } from './app/core/database/container';
+import { TYPES } from './app/core/containers/types';
 
 async function bootstrap() {
-  const config = CoreContainer.get<ConfigService>(CONTAINER_MAP_CONFIG_SERVICE);
+  const config = CoreContainer.get<ConfigService>(TYPES.CONTAINER_MAP_CONFIG_SERVICE);
 
   config.mapObject({
     Application: {
@@ -34,14 +32,17 @@ async function bootstrap() {
       User: process.env['DATABASE_USER'],
       Pass: process.env['DATABASE_PASS'],
       Logging: false,
+    },
+    Auth: {
+      Secret: process.env['AUTH_SECRET']
     }
   });
 
-  const logger = CoreContainer.get<LoggerService>(CONTAINER_CONSOLE_LOGGER_SERVICE);
-  const databaseConfigurator = CoreContainer.get<DatabaseConfiguratorService>(CONTAINER_DEFAULT_DATABASE_CONFIGURATOR_SERVICE);
+  const logger = CoreContainer.get<LoggerService>(TYPES.CONTAINER_CONSOLE_LOGGER_SERVICE);
+  const databaseConfigurator = CoreContainer.get<DatabaseConfiguratorService>(TYPES.CONTAINER_DEFAULT_DATABASE_CONFIGURATOR_SERVICE);
 
   const app = new App(CoreContainer);
-  const express: express.Express = app.express;
+  const express: Express = app.express;
   const server = new InversifyExpressServer(
     CoreContainer,
     null,
@@ -65,6 +66,9 @@ async function bootstrap() {
         throw error;
     }
   });
+
+  await tryConnection(databaseConfigurator);
+
   const application = server.setConfig(app.initMiddleware.bind(app)).setErrorConfig(app.initErrorMiddleware.bind(app)).build();
   getRouteInfo(CoreContainer).forEach(route => {
     logger.info(`[CONTROLLER] '${route.controller}' registrated`);
@@ -72,8 +76,6 @@ async function bootstrap() {
   });
 
   application.listen(port, () => logger.info(`Listening on port ${port}`));
-
-  await tryConnection(databaseConfigurator)
 
   process.on('SIGINT', function (msg) {
     logger.info('SIGINT received', msg);

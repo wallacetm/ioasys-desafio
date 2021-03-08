@@ -14,3 +14,9 @@ export const CONFIG_DATABASE_NAME = 'database:name';
 export const CONFIG_DATABASE_USER = 'database:user';
 export const CONFIG_DATABASE_PASS = 'database:pass';
 export const CONFIG_DATABASE_LOGGING = 'database:logging';
+export const CONFIG_AUTH_SECRET = 'auth:secret';
+
+/**
+ * Inversify reflect metadata keys
+ */
+export const METADATA_HTTP_CONTEXT = 'inversify-express-utils:httpcontext';
