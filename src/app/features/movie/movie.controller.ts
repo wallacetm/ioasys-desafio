@@ -1,5 +1,5 @@
 import { inject } from 'inversify';
-import { BaseHttpController, controller, interfaces, requestParam, httpGet, queryParam, httpPost, requestBody } from 'inversify-express-utils';
+import { BaseHttpController, controller, interfaces, requestParam, httpGet, queryParam, httpPost, requestBody, httpPut } from 'inversify-express-utils';
 import { MovieService } from './interfaces';
 import { TYPES } from '../../core/containers/types';
 import { QueryBuilder } from 'typeorm-express-query-builder';
@@ -7,6 +7,7 @@ import * as createHttpError from 'http-errors';
 import { permission } from '../../shared/decorators/permission.decorator';
 import { MovieToSaveDTO } from './movie-to-save.dto';
 import { validate } from '../../shared/decorators/validate.decorator';
+import { VoteToSaveDTO } from './votes/vote-to-save.dto';
 
 @controller('/movies')
 export class MovieController extends BaseHttpController {
@@ -81,5 +82,29 @@ export class MovieController extends BaseHttpController {
     }
   }
 
-  
+  /**
+   * Vote on a movie.
+   *
+   * @route PUT /movies/:uuid/votes
+   * @group Movie
+   * @param {string} uuid.param - Movie uuid.
+   * @param {VoteToSave.model} vote.body - Vote payload.
+   * @returns {string} 200 - OK.
+   * @returns {HttpError.model} 422 - Movie payload invalid.
+   */
+  @permission('user')
+  @validate(VoteToSaveDTO)
+  @httpPut('/:uuid/votes', TYPES.CONTAINER_REQUIRED_AUTH_MIDDLEWARE)
+  public async vote(@requestParam('uuid') uuid: string, @requestBody() vote: VoteToSaveDTO): Promise<interfaces.IHttpActionResult> {
+    try {
+      await this.service.saveVote(uuid, vote);
+      return this.ok();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
+
 }

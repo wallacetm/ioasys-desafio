@@ -8,6 +8,8 @@ import { TYPES } from '../../core/containers/types';
 import { MovieDTO } from './movie.dto';
 import { MovieToSaveDTO } from './movie-to-save.dto';
 import { v4 as uuidV4 } from 'uuid';
+import { VoteToSaveDTO } from './votes/vote-to-save.dto';
+import { VoteEntity } from './votes/vote.entity';
 
 @injectable()
 export class DefaultMovieService implements MovieService {
@@ -18,6 +20,10 @@ export class DefaultMovieService implements MovieService {
 
   get repository(): Repository<MovieEntity> {
     return this.connection.getRepository(MovieEntity);
+  }
+
+  get votesRepository(): Repository<VoteEntity> {
+    return this.connection.getRepository(VoteEntity);
   }
 
   async exists(movie: Partial<Pick<MovieDTO, 'name' | 'uuid'>>): Promise<boolean> {
@@ -43,6 +49,27 @@ export class DefaultMovieService implements MovieService {
   }
   getAll(options: FindManyOptions<MovieEntity>): Promise<MovieDTO[]> {
     return this.repository.find(options).then(entities => entities.map(entity => entity.toDTO()));
+  }
+
+  async saveVote(uuid: string, vote: VoteToSaveDTO): Promise<void> {
+    try {
+      let entity = await this.votesRepository.findOne({
+        where: {
+          movieUuid: uuid,
+          votedBy: this.user.details.uuid
+        }
+      });
+      if (entity) {
+        entity.rating = vote.rating;
+      } else {
+        entity = vote.toEntity();
+        entity.votedBy = this.user.details.uuid;
+        entity.movieUuid = uuid;
+      }
+      await this.votesRepository.save(entity);
+    } catch (error) {
+      throw error;
+    }
   }
 
 }
