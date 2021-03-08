@@ -3,8 +3,8 @@ import { PersonEntity } from '../../shared/person/person.entity';
 import { PersonToSaveDTO } from '../../shared/person/person-to-save.dto';
 
 export interface UserPrincipal extends interfaces.Principal {
-  details: PersonEntity,
-  token: string;
+  details: Pick<PersonEntity, 'uuid' | 'email' | 'firstName' | 'lastName'>,
+  token?: string;
   isResourceOwner(resrouceEntity: { createdBy: string }): Promise<boolean>;
 }
 

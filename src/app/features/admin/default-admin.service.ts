@@ -30,15 +30,17 @@ export class DefaultAdminService implements AdminService {
     });
   }
 
-  async validatePassword(admin: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<boolean> {
+  async getAndValidatePassword(admin: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<AdminDTO> {
     try {
       const entity = await this.repository.findOne({ where: { email: admin.email } });
       const equals = await this.crypto.compare(entity.password, admin.password);
-      return equals;
+      if (equals) {
+        return entity.toDTO()
+      }
     } catch (error) {
       this.logger.error(`Error checking admin ${admin.email} password`, error);
     }
-    return false;
+    return null;
   }
 
   async save(admin: AdminToSaveDTO, uuid?: string): Promise<AdminDTO> {

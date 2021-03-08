@@ -10,6 +10,7 @@ import { LoggerService } from '../../../../dist/src/app/core/logger/interfaces';
 import * as createHttpError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 import { TYPES } from '../../core/containers/types';
+import { PersonEntity } from '../../shared/person/person.entity';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -30,15 +31,17 @@ export class DefaultUserService implements UserService {
     });
   }
 
-  async validatePassword(user: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<boolean> {
+  async getAndValidatePassword(user: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<UserDTO> {
     try {
       const entity = await this.repository.findOne({ where: { email: user.email } });
       const equals = await this.crypto.compare(entity.password, user.password);
-      return equals;
+      if (equals) {
+        return entity.toDTO();
+      }
     } catch (error) {
       this.logger.error(`Error checking user ${user.email} password`, error);
     }
-    return false;
+    return null;
   }
 
   async save(user: UserToSaveDTO, uuid?: string): Promise<UserDTO> {
