@@ -3,13 +3,13 @@ import { Connection, FindManyOptions, Repository } from 'typeorm';
 import { MovieService } from './interfaces';
 import { MovieEntity } from './movie.entity';
 import { UserPrincipal } from '../../core/auth/interfaces';
-import { LoggerService } from '../../../../dist/src/app/core/logger/interfaces';
 import { TYPES } from '../../core/containers/types';
 import { MovieDTO } from './movie.dto';
 import { MovieToSaveDTO } from './movie-to-save.dto';
 import { v4 as uuidV4 } from 'uuid';
 import { VoteToSaveDTO } from './votes/vote-to-save.dto';
 import { VoteEntity } from './votes/vote.entity';
+import { LoggerService } from '../../core/logger/interfaces';
 
 @injectable()
 export class DefaultMovieService implements MovieService {

@@ -1,3 +1,28 @@
+# Como rodar a aplicação
+
+Caso seu ambiente esteja todo configurado com Node, basta rodar o comando `npm start` e configurar as variaveis de ambiente abaixo:
+
+```env
+DATABASE_NAME=postgres
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_PASS=postgres
+DATABASE_USER=postgres
+NODE_ENV=production
+AUTH_SECRET=S0m3_S3cR3t
+```
+
+As envs acima podem ser configuradas no arquiv `.env` que pode ser criado na raiz do projeto.
+
+Para rodar com o banco junto, basta subir o `docker-compose.yaml` e acessar a aplicação na porta `3000`.
+
+Na collection foi deixa alguns tokens de acesso: [Postman collection](https://www.getpostman.com/collections/0cd98c2729634d1cf18a).
+
+Porém se preferir segue alguns usuarios e senhas:
+
+Admin: `wallace.reetz@gmail.com` `oh_my_pass`
+User: `wall.ree1@gmail.com` `oh_my_pass`
+
 # Sobre
 
 Estes documento README tem como objetivo fornecer as informações necessárias para realização do projeto de avaliação de candidatos.

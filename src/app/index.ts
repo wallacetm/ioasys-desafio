@@ -7,9 +7,8 @@ import { Express } from 'express';
 import { LoggerService } from './core/logger/interfaces';
 import * as createHttpError from 'http-errors';
 import { TYPES } from './core/containers/types';
-import { isError } from 'util';
-import { ConfigService } from '../../dist/src/app/core/config/interfaces';
 import { CONFIG_SERVER_NODE_ENV } from '../constants';
+import { ConfigService } from './core/config/interfaces';
 
 export class App {
   public readonly express: express.Express = express();
@@ -36,7 +35,7 @@ export class App {
   }
   private clientErrorHandler(): express.ErrorRequestHandler {
     return (err: createHttpError.UnknownError, req: express.Request, res: express.Response, next: express.NextFunction): void => {
-      if (createHttpError.isHttpError(isError)) {
+      if (createHttpError.isHttpError(err)) {
         next(err);
       } else {
         next(createHttpError(err));

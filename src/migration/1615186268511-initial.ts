@@ -4,6 +4,7 @@ export class initial1615186268511 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('CREATE SCHEMA ioasys AUTHORIZATION postgres;');
+    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
     //Admins
     await queryRunner.query(`
     CREATE TABLE ioasys.admins (

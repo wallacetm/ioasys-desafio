@@ -6,10 +6,10 @@ import { UserEntity } from './user.entity';
 import { UserToSaveDTO } from './user-to-save.dto';
 import { UserPrincipal, CryptoService } from '../../core/auth/interfaces';
 import { PersonToSaveDTO } from '../../shared/person/person-to-save.dto';
-import { LoggerService } from '../../../../dist/src/app/core/logger/interfaces';
 import * as createHttpError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 import { TYPES } from '../../core/containers/types';
+import { LoggerService } from '../../core/logger/interfaces';
 
 @injectable()
 export class DefaultUserService implements UserService {
