@@ -25,6 +25,8 @@ User: `wall.ree1@gmail.com` `oh_my_pass`
 
 Por questão de tempo não consegui fazer testes e nem deixar configuravel o `schema`. O `schema` default está sendo usado o `ioasys`.
 
+Para acessar o Swagger da aplicação, basta acessar o endpoint `/api-docs`.
+
 # Sobre
 
 Estes documento README tem como objetivo fornecer as informações necessárias para realização do projeto de avaliação de candidatos.
