@@ -6,7 +6,7 @@ import { UserToSaveDTO } from './user-to-save.dto';
 import { TYPES } from '../../core/containers/types';
 import { permission } from '../../shared/decorators/permission.decorator';
 import * as createHttpError from 'http-errors';
-@controller('/user')
+@controller('/users', TYPES.CONTAINER_REQUIRED_AUTH_MIDDLEWARE)
 export class UserController extends BaseHttpController {
 
   @inject(TYPES.CONTAINER_DEFAULT_USER_SERVICE) private readonly service: UserService;
@@ -14,7 +14,7 @@ export class UserController extends BaseHttpController {
   /**
    * Create a user.
    *
-   * @route POST /user
+   * @route POST /users
    * @group User
    * @param {UserToSave.model} user.body - User payload.
    * @returns {User.model} 200 - Created user.
@@ -39,7 +39,7 @@ export class UserController extends BaseHttpController {
   /**
    * Update the specified user. In the user update payload the UUID will be ignored and will consider only the request param.
    *
-   * @route PUT /user/:uuid
+   * @route PUT /users/:uuid
    * @group User
    * @param {string} uuid.param - User UUID.
    * @param {UserToSave.model} user.body - User payload.
@@ -64,7 +64,7 @@ export class UserController extends BaseHttpController {
   /**
    * Perform an soft delete in the specified user. In the user update payload the UUID will be ignored and will consider only the request param.
    *
-   * @route DELETE /user/:uuid
+   * @route DELETE /users/:uuid
    * @group User
    * @param {string} uuid.param - User UUID.
    * @param {User.model} user.body - User payload.

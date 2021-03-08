@@ -4,7 +4,7 @@ import { PersonEntity } from './person.entity';
 
 export abstract class PersonToSaveDTO extends PersonDTO {
   constructor(partial: Partial<PersonToSaveDTO> = {}) {
-    super(partial);
+    super({ ...partial, uuid: undefined });
   }
 
   @IsNotEmpty({ message: 'Password cannot be empty' })

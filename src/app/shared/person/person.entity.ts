@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { PersonDTO } from './person.dto';
 
 export abstract class PersonEntity {

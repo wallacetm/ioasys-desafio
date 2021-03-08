@@ -10,5 +10,6 @@ export const TYPES = {
   CONTAINER_CONSOLE_LOGGER_SERVICE: Symbol('ConsoleLoggerService'),
   CONTAINER_EXPRESS_SWAGGER_SERVICE: Symbol('ExpressSwaggerService'),
   CONTAINER_DEFAULT_USER_SERVICE: Symbol('DefaultUserService'),
-  CONTAINER_DEFAULT_ADMIN_SERVICE: Symbol('DefaultAdminService')
+  CONTAINER_DEFAULT_ADMIN_SERVICE: Symbol('DefaultAdminService'),
+  CONTAINER_DEFAULT_MOVIE_SERVICE: Symbol('DefaultMovieService')
 }

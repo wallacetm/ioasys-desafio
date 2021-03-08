@@ -10,7 +10,6 @@ import { LoggerService } from '../../../../dist/src/app/core/logger/interfaces';
 import * as createHttpError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 import { TYPES } from '../../core/containers/types';
-import { PersonEntity } from '../../shared/person/person.entity';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -24,11 +23,15 @@ export class DefaultUserService implements UserService {
     return this.connection.getRepository(UserEntity);
   }
 
-  exists(user: Partial<Pick<UserDTO, 'email' | 'uuid'>>, deleted = false): Promise<UserDTO> {
-    return this.repository.findOne({
-      where: [{ email: user.email }, { uuid: user.uuid }],
-      withDeleted: deleted
-    });
+  async exists(user: Partial<Pick<UserDTO, 'email' | 'uuid'>>, deleted = false): Promise<boolean> {
+    try {
+      const entity = await this.repository.findOne({
+        where: [{ email: user.email }, { uuid: user.uuid }],
+        withDeleted: deleted
+      });
+      return !!entity;
+    } catch (error) { }
+    return false;
   }
 
   async getAndValidatePassword(user: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<UserDTO> {

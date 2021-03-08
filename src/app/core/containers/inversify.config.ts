@@ -1,5 +1,6 @@
 import { Container } from 'inversify';
 import { AdminContainerModule } from '../../features/admin/container.module';
+import { MovieContainerModule } from '../../features/movie/container.module';
 import { UserContainerModule } from '../../features/user/container.module';
 import { AuthContainerModule } from '../auth/container.module';
 import { ConfigContainerModule } from '../config/container.module';
@@ -17,7 +18,8 @@ CoreContainer.load(
   DatabaseContainerModule,
   AuthContainerModule,
   UserContainerModule,
-  AdminContainerModule
+  AdminContainerModule,
+  MovieContainerModule
 );
 
 export { CoreContainer };

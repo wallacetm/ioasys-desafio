@@ -23,11 +23,15 @@ export class DefaultAdminService implements AdminService {
     return this.connection.getRepository(AdminEntity);
   }
 
-  exists(admin: Partial<Pick<AdminDTO, 'email' | 'uuid'>>, deleted = false): Promise<AdminDTO> {
-    return this.repository.findOne({
-      where: [{ email: admin.email }, { uuid: admin.uuid }],
-      withDeleted: deleted
-    });
+  async exists(admin: Partial<Pick<AdminDTO, 'email' | 'uuid'>>, deleted = false): Promise<boolean> {
+    try {
+      const entity = await this.repository.findOne({
+        where: [{ email: admin.email }, { uuid: admin.uuid }],
+        withDeleted: deleted
+      });
+      return !!entity;
+    } catch (error) { }
+    return false;
   }
 
   async getAndValidatePassword(admin: Pick<PersonToSaveDTO, 'email' | 'password'>): Promise<AdminDTO> {

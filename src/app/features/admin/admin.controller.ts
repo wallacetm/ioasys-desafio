@@ -6,7 +6,7 @@ import { AdminToSaveDTO } from './admin-to-save.dto';
 import { TYPES } from '../../core/containers/types';
 import { permission } from '../../shared/decorators/permission.decorator';
 import createHttpError from 'http-errors';
-@controller('/admin')
+@controller('/admins', TYPES.CONTAINER_REQUIRED_AUTH_MIDDLEWARE)
 export class AdminController extends BaseHttpController {
 
   @inject(TYPES.CONTAINER_DEFAULT_ADMIN_SERVICE) private readonly service: AdminService;
@@ -14,7 +14,7 @@ export class AdminController extends BaseHttpController {
   /**
    * Create a admin.
    *
-   * @route POST /admin
+   * @route POST /admins
    * @group Admin
    * @param {AdminToSave.model} admin.body - Admin payload.
    * @returns {Admin.model} 200 - Created admin.
@@ -39,7 +39,7 @@ export class AdminController extends BaseHttpController {
   /**
    * Update the specified admin. In the admin update payload the UUID will be ignored and will consider only the request param.
    *
-   * @route PUT /admin/:uuid
+   * @route PUT /admins/:uuid
    * @group Admin
    * @param {string} uuid.param - Admin UUID.
    * @param {AdminToSave.model} admin.body - Admin payload.
@@ -64,7 +64,7 @@ export class AdminController extends BaseHttpController {
   /**
    * Perform an soft delete in the specified admin. In the admin update payload the UUID will be ignored and will consider only the request param.
    *
-   * @route DELETE /admin/:uuid
+   * @route DELETE /admins/:uuid
    * @group Admin
    * @param {string} uuid.param - Admin UUID.
    * @param {Admin.model} admin.body - Admin payload.
